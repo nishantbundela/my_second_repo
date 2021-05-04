@@ -6,7 +6,7 @@ b=$(ls | wc -l)
 function guess {
 	if [[ $1 -eq $2 ]]
 	then
-	echo "Congratulations! You have guessed correctly, the no. of files in this directory is indeed $a"
+	echo "Congratulations! You have guessed correctly, the no. of files in this directory is indeed $b"
 	elif [[ $1 -gt $2 ]]
 	then
 	echo "Your guess is greater than the number of files."
