@@ -13,7 +13,7 @@ function guess {
 	else
 	echo "Your guess is less than the number of files."
 	fi
-	echo "----------------------------------------------"
+	echo "---------------------Try Again------------------------"
 }
 
 while [[ $response -ne $b ]]
