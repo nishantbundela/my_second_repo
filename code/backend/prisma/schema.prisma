@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  ajhed      String     @id @db.VarChar(20)
+  first_name String     @db.VarChar(50)
+  last_name  String     @db.VarChar(50)
+  employees  employee[]
+  job        job[]
+}
+
+model department {
+  department_title String @id @db.VarChar(50)
+  job              job[]
+}
+
+model employee {
+  jhed        String      @id @db.VarChar(20)
+  first_name  String      @unique @db.VarChar(50)
+  last_name   String      @db.VarChar(50)
+  user_role   String      @db.VarChar(255)
+  nationality Boolean?
+  ejhed       String?     @db.VarChar(20)
+  ajhed       String?     @db.VarChar(20)
+  admin       admin?      @relation(fields: [ajhed], references: [ajhed], onDelete: NoAction, onUpdate: NoAction)
+  employer    employer?   @relation(fields: [ejhed], references: [ejhed], onDelete: NoAction, onUpdate: NoAction)
+  jobs        job[]
+  timesheets  timesheet[]
+}
+
+model employer {
+  ejhed      String     @id @db.VarChar(20)
+  first_name String     @db.VarChar(50)
+  last_name  String     @db.VarChar(50)
+  employees  employee[]
+  jobs       job[]
+}
+
+model job {
+  job_id           String      @id @db.VarChar(20)
+  role_title       String?     @db.VarChar(255)
+  jhed             String?     @db.VarChar(20)
+  ejhed            String?     @db.VarChar(20)
+  ajhed            String?     @db.VarChar(20)
+  wage             Decimal?    @db.Decimal
+  hour_limit       Decimal?    @db.Decimal
+  department_title String?     @db.VarChar(50)
+  job_active       Boolean?
+  grant_id         String?     @db.VarChar(255)
+  admin            admin?      @relation(fields: [ajhed], references: [ajhed], onDelete: NoAction, onUpdate: NoAction)
+  department       department? @relation(fields: [department_title], references: [department_title], onDelete: NoAction, onUpdate: NoAction)
+  employer         employer?   @relation(fields: [ejhed], references: [ejhed], onDelete: NoAction, onUpdate: NoAction)
+  employee         employee?   @relation(fields: [jhed], references: [jhed], onDelete: NoAction, onUpdate: NoAction)
+  timesheet        timesheet[]
+}
+
+model timesheet {
+  job_id      String    @db.VarChar(20)
+  jhed        String    @db.VarChar(20)
+  date        DateTime  @db.Date
+  start_hours DateTime? @db.Timestamp(6)
+  end_hours   DateTime? @db.Timestamp(6)
+  approval    Boolean?
+  employee    employee  @relation(fields: [jhed], references: [jhed], onDelete: NoAction, onUpdate: NoAction)
+  job         job       @relation(fields: [job_id], references: [job_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([jhed, job_id, date], map: "pk_jhed_jobid_date")
+}
